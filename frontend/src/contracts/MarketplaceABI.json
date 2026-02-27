@@ -1,0 +1,634 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "seller",
+        "type": "address"
+      }
+    ],
+    "name": "FileDeactivated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "buyer",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "seller",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "FilePurchased",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "seller",
+        "type": "address"
+      }
+    ],
+    "name": "FileReactivated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "cid",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "seller",
+        "type": "address"
+      }
+    ],
+    "name": "FileUploaded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "oldPrice",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "PriceUpdated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "allPurchases",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "fileId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "buyer",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "purchaseTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pricePaid",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "checkAccess",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "deactivateFile",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "fileCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "files",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "cid",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "previewImage",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address payable",
+        "name": "seller",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalSales",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isActive",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "createdAt",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllActiveFiles",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getFile",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "previewImage",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "seller",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalSales",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isActive",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getFileCID",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPlatformStats",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "totalFiles",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalPurchases",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "contractBalance",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserListings",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserPurchases",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "hasAccess",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "platformFee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "purchaseFile",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "reactivateFile",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_newFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "updatePlatformFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_newPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "updatePrice",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_cid",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_title",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_description",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_previewImage",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_price",
+        "type": "uint256"
+      }
+    ],
+    "name": "uploadFile",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "userListings",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "userPurchases",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawFees",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
