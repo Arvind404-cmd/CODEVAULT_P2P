@@ -10,6 +10,8 @@ function Marketplace({ contract, account, onConnectWallet }) {
   const [accessMap, setAccessMap] = useState({});
   const [purchasing, setPurchasing] = useState(null);
   const [downloading, setDownloading] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('default');
 
   // Fetch files on mount
   useEffect(() => {
@@ -162,6 +164,21 @@ function Marketplace({ contract, account, onConnectWallet }) {
     return '📁';
   };
 
+  const filteredFiles = files
+    .filter(file => {
+      const q = searchQuery.toLowerCase();
+      return (
+        file.title.toLowerCase().includes(q) ||
+        file.description.toLowerCase().includes(q)
+      );
+    })
+    .sort((a, b) => {
+      if (sortBy === 'price-asc') return Number(a.price) - Number(b.price);
+      if (sortBy === 'price-desc') return Number(b.price) - Number(a.price);
+      if (sortBy === 'sales') return b.totalSales - a.totalSales;
+      return a.id - b.id;
+    });
+
   if (loading) {
     return (
       <div className="loading">
@@ -177,6 +194,29 @@ function Marketplace({ contract, account, onConnectWallet }) {
         <button className="btn btn-secondary" onClick={fetchFiles}>
           🔄 Refresh
         </button>
+      </div>
+
+      {/* Search and Sort Controls */}
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+        <input
+          type="text"
+          className="form-input"
+          placeholder="🔍 Search files..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ flex: 1, minWidth: '200px' }}
+        />
+        <select
+          className="form-input"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          style={{ width: 'auto', minWidth: '160px' }}
+        >
+          <option value="default">Sort: Default</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="sales">Most Popular</option>
+        </select>
       </div>
 
       {!account && (
@@ -203,9 +243,15 @@ function Marketplace({ contract, account, onConnectWallet }) {
           <h2 className="empty-state-title">No files available</h2>
           <p>Be the first to upload a file to the marketplace!</p>
         </div>
+      ) : filteredFiles.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-state-icon">🔍</div>
+          <h2 className="empty-state-title">No results found</h2>
+          <p>Try a different search term or clear the filter.</p>
+        </div>
       ) : (
         <div className="file-grid">
-          {files.map((file) => (
+          {filteredFiles.map((file) => (
             <div key={file.id} className="file-card">
               <div className="file-preview">
                 {getFileIcon(file.title)}

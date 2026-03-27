@@ -266,6 +266,14 @@ app.post('/api/ipfs/pin/:cid', async (req, res) => {
  * Get list of pinned files
  */
 app.get('/api/ipfs/pins', async (req, res) => {
+  if (!ipfsAvailable) {
+    const pins = Array.from(localFileStore.entries()).map(([cid]) => ({
+      cid,
+      type: 'recursive'
+    }));
+    return res.json({ success: true, pins, count: pins.length, demoMode: true });
+  }
+
   try {
     const pins = [];
     for await (const pin of ipfs.pin.ls({ type: 'recursive' })) {
@@ -292,15 +300,23 @@ app.get('/api/ipfs/pins', async (req, res) => {
  * Connect to a specific peer
  */
 app.post('/api/ipfs/connect', async (req, res) => {
-  try {
-    const { multiaddr } = req.body;
-    if (!multiaddr) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Multiaddr required' 
-      });
-    }
+  const { multiaddr } = req.body;
+  if (!multiaddr) {
+    return res.status(400).json({ 
+      success: false, 
+      error: 'Multiaddr required' 
+    });
+  }
 
+  if (!ipfsAvailable) {
+    return res.json({
+      success: true,
+      message: `Demo mode - connection to ${multiaddr} simulated`,
+      demoMode: true
+    });
+  }
+
+  try {
     await ipfs.swarm.connect(multiaddr);
     
     res.json({
@@ -321,6 +337,14 @@ app.post('/api/ipfs/connect', async (req, res) => {
  * Measure download speed from P2P network
  */
 app.get('/api/benchmark/p2p/:cid', async (req, res) => {
+  if (!ipfsAvailable) {
+    return res.status(503).json({
+      success: false,
+      error: 'Benchmarking requires a live IPFS node',
+      demoMode: true
+    });
+  }
+
   try {
     const { cid } = req.params;
     const startTime = Date.now();
@@ -353,6 +377,21 @@ app.get('/api/benchmark/p2p/:cid', async (req, res) => {
  * Get network stats
  */
 app.get('/api/stats', async (req, res) => {
+  if (!ipfsAvailable) {
+    return res.json({
+      success: true,
+      nodeId: 'demo-node',
+      peerCount: 0,
+      bandwidth: {
+        totalIn: '0',
+        totalOut: '0',
+        rateIn: '0',
+        rateOut: '0'
+      },
+      demoMode: true
+    });
+  }
+
   try {
     const id = await ipfs.id();
     const peers = await ipfs.swarm.peers();
@@ -383,7 +422,7 @@ app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     timestamp: new Date().toISOString(),
-    ipfsConnected: !!ipfs
+    ipfsConnected: ipfsAvailable
   });
 });
 
@@ -410,6 +449,15 @@ wss.on('connection', (ws) => {
   // Send peer updates every 5 seconds
   const interval = setInterval(async () => {
     try {
+      if (!ipfsAvailable) {
+        ws.send(JSON.stringify({
+          type: 'peers',
+          data: [],
+          count: 0,
+          demoMode: true
+        }));
+        return;
+      }
       const peers = await ipfs.swarm.peers();
       ws.send(JSON.stringify({
         type: 'peers',
